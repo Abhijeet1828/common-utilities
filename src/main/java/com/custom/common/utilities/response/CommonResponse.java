@@ -9,6 +9,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * This class is used to send API response in a specified manner.
+ * 
+ * @implNote This class is used by {@link ResponseHelper} class.
+ * 
+ * @author Abhijeet
+ *
+ */
 @Getter
 @Setter
 @NoArgsConstructor

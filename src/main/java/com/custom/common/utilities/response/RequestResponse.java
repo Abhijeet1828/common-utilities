@@ -1,5 +1,6 @@
 package com.custom.common.utilities.response;
 
+import com.custom.common.utilities.filters.RequestResponseLoggingFilter;
 import com.google.gson.JsonObject;
 
 import lombok.AllArgsConstructor;
@@ -8,6 +9,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * This class is used to print the request and response of each API request.
+ * 
+ * @implSpec It is being used by {@link RequestResponseLoggingFilter}.
+ * 
+ * @author Abhijeet
+ *
+ */
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,19 +25,19 @@ import lombok.Setter;
 public class RequestResponse {
 
 	private String path;
-	
+
 	private JsonObject headers;
-	
+
 	private String queryString;
-	
+
 	private String httpMethod;
-	
+
 	private String payload;
-	
+
 	private int httpStatus;
-	
+
 	private String response;
-	
+
 	private long timeTakenMillis;
 
 	@Override

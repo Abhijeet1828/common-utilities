@@ -20,6 +20,17 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 import com.custom.common.utilities.response.RequestResponse;
 import com.google.gson.JsonObject;
 
+/**
+ * This class is used to print all the request and response of the APIs which
+ * are being hit.
+ * 
+ * @implNote It extends {@link OncePerRequestFilter}.
+ * @implSpec The request, response, headers and time taken are printed using the
+ *           {@link RequestResponse} class.
+ * 
+ * @author Abhijeet
+ *
+ */
 @Component
 public class RequestResponseLoggingFilter extends OncePerRequestFilter {
 

@@ -14,6 +14,15 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+/**
+ * This class is used to convert given objects to a given class. Data can be of
+ * type Object or String.
+ * 
+ * @implNote Uses Object mapper of Jackson Library.
+ * 
+ * @author Abhijeet
+ *
+ */
 public final class TypeConversionUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(TypeConversionUtils.class);
@@ -146,6 +155,12 @@ public final class TypeConversionUtils {
 		return Collections.emptyMap();
 	}
 
+	/**
+	 * This method is used to convert Object to Map of String and String.
+	 * 
+	 * @param data
+	 * @return
+	 */
 	public static Map<String, String> convertToStringkeyValueMap(Object data) {
 		try {
 			if (Objects.nonNull(data)) {
@@ -163,6 +178,12 @@ public final class TypeConversionUtils {
 		return Collections.emptyMap();
 	}
 
+	/**
+	 * This method is used to convert JSON objects to String.
+	 * 
+	 * @param data
+	 * @return
+	 */
 	public static String convertObjectToString(Object data) {
 		try {
 			if (Objects.nonNull(data)) {
@@ -174,6 +195,12 @@ public final class TypeConversionUtils {
 		return StringUtils.EMPTY;
 	}
 
+	/**
+	 * This method is used to convert Object to a list of Map(String, Object).
+	 * 
+	 * @param data
+	 * @return
+	 */
 	public static List<Map<String, Object>> convertToListOfMap(Object data) {
 		try {
 			if (Objects.nonNull(data)) {

@@ -21,6 +21,17 @@ import com.custom.common.utilities.constants.FailureConstants;
 import com.custom.common.utilities.response.CommonResponse;
 import com.custom.common.utilities.response.ResponseHelper;
 
+/**
+ * This class is used to handle the exceptions thrown by the service layer and
+ * convert them into {@link CommonResponse}.
+ * 
+ * @implNote Extends the {@link ResponseEntityExceptionHandler}.
+ * @implSpec Handles various types of exceptions including custom exceptions
+ *           like {@link CommonException}.
+ * 
+ * @author Abhijeet
+ *
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -45,7 +56,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(Exception.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 	public @ResponseBody CommonResponse handleException(Exception ex) {
-		LOGGER_LOCAL.error("new Global exception handled!    Message {}", ex.getMessage(), ex);
+		LOGGER_LOCAL.error("Global exception handled!    Message {}", ex.getMessage(), ex);
 		return new CommonResponse(FailureConstants.INTERNAL_SERVER_ERROR.getFailureCode(),
 				FailureConstants.INTERNAL_SERVER_ERROR.getFailureMsg(), ex.getMessage());
 	}
@@ -79,4 +90,3 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return ResponseHelper.generateResponse(response, HttpStatus.BAD_REQUEST);
 	}
 }
-

@@ -3,6 +3,14 @@ package com.custom.common.utilities.response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+/**
+ * This class wraps the status code and response data into
+ * {@link CommonResponse} class and then returns the {@link ResponseEntity}
+ * instance.
+ * 
+ * @author Abhijeet
+ *
+ */
 public final class ResponseHelper {
 
 	private ResponseHelper() {

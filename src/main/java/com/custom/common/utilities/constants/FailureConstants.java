@@ -1,5 +1,13 @@
 package com.custom.common.utilities.constants;
 
+/**
+ * Enum for storing the common failure HTTP codes and messages that can be used
+ * across Spring Boot projects.
+ * 
+ * 
+ * @author Abhijeet
+ *
+ */
 public enum FailureConstants {
 
 	INTERNAL_SERVER_ERROR(-1000, "Oops! Something went wrong. Please try again later"),

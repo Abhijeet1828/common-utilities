@@ -1,9 +1,16 @@
 package com.custom.common.utilities.constants;
 
+/**
+ * Enum for storing the common success HTTP codes and messages that can be used
+ * across Spring Boot projects.
+ * 
+ * @author Abhijeet
+ *
+ */
 public enum SuccessConstants {
-	
+
 	USER_SIGN_UP_SUCCESS(2000, "User created successfully");
-	
+
 	private final int successCode;
 	private final String successMsg;
 

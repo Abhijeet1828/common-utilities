@@ -7,6 +7,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * This class is used to store the response status codes, messages and localized
+ * messages.
+ * 
+ * @implSpec This class is used by {@link CommonResponse}.
+ * 
+ * @author Abhijeet
+ *
+ */
 @Getter
 @Setter
 @NoArgsConstructor

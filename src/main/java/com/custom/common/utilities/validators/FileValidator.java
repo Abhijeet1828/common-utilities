@@ -14,6 +14,14 @@ import org.springframework.web.multipart.MultipartFile;
 import com.custom.common.utilities.constants.FailureConstants;
 import com.custom.common.utilities.exception.CommonException;
 
+/**
+ * This class is used to validate the files which are sent in the request.
+ * 
+ * @implNote Uses the Apache Tika library for validation of files.
+ * 
+ * @author Abhijeet
+ *
+ */
 public final class FileValidator {
 
 	public FileValidator() {
@@ -22,13 +30,23 @@ public final class FileValidator {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileValidator.class);
 
+	// List of file types acceptable for images.
 	public static final List<String> IMAGE_TYPES = Collections
 			.unmodifiableList(Arrays.asList("image/jpeg", "image/jpg", "image/png"));
 
+	// Extensions which are not allowed, for security reasons
 	public enum InValidExtensions {
 		JSP, EXE, SH, PEM, PPK, ZIP, GZIP, GZ, DMG, RAR, GIF
 	}
 
+	/**
+	 * Thie method is used to validate {@link MultipartFile} with the allowed file
+	 * types provided in the function parameters.
+	 * 
+	 * @param multipartFile
+	 * @param allowedTypes
+	 * @throws CommonException
+	 */
 	public static void validateFile(MultipartFile multipartFile, List<String> allowedTypes) throws CommonException {
 		if (multipartFile == null || multipartFile.getSize() == 0l) {
 			LOGGER.error("Empty file in request");
@@ -59,6 +77,13 @@ public final class FileValidator {
 		}
 	}
 
+	/**
+	 * This method checks if the file extension is present in the
+	 * {@link InValidExtensions} enum.
+	 * 
+	 * @param extension
+	 * @return
+	 */
 	public static boolean isInvalidExtension(String extension) {
 		for (InValidExtensions invalidExtension : InValidExtensions.values()) {
 			if (invalidExtension.name().equalsIgnoreCase(extension)) {
