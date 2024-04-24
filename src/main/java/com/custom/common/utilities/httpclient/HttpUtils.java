@@ -264,7 +264,7 @@ public final class HttpUtils {
 			webServiceResponse = CommonHttpFunctions.prepareResponse(httpResponse, url);
 
 		} catch (Exception e) {
-			LOGGER.info("exception in sendDeleteRequest : ", e);
+			LOGGER.info("Exception in sendDeleteRequest : ", e);
 		}
 		return webServiceResponse;
 	}
