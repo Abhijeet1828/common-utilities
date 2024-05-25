@@ -10,14 +10,15 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 @Documented
-@Constraint(validatedBy = SafeInputValidator.class)
+@Constraint(validatedBy = OptionalPhoneNumberValidator.class)
 @Target({ ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SafeInput {
+public @interface OptionalMobileNumber {
 
-	String message() default "The input value is not safe";
+	String message() default "Invalid phone number : Please enter a valid 10 digit phone number!";
 
 	Class<?>[] groups() default {};
 
 	Class<? extends Payload>[] payload() default {};
+
 }

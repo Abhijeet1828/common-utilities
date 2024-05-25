@@ -1,7 +1,5 @@
 package com.custom.common.utilities.exception;
 
-import javax.validation.ConstraintViolationException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -28,6 +26,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 @ControllerAdvice
+@ResponseBody
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private static final Logger LOGGER_LOCAL = LoggerFactory.getLogger(GlobalExceptionHandler.class);
@@ -38,14 +37,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		LOGGER_LOCAL.error("Global Common exception handled!   statusCode = {}, Message = {}", ex.getStatusCode(),
 				ex.getLocalizedMessage());
 		return new CommonResponse(ex.getStatusCode(), ex.getMessage(), ex.getLocalizedMessage());
-	}
-
-	@ExceptionHandler(ConstraintViolationException.class)
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-	public @ResponseBody CommonResponse handleConstraintViolationException(ConstraintViolationException ex) {
-		LOGGER_LOCAL.error("Global ConstraintViolationException Handled! Message = {} ", ex.getMessage(), ex);
-		return new CommonResponse(FailureConstants.METHOD_ARGUMENT_NOT_VALID_EXCEPTION.getFailureCode(),
-				FailureConstants.METHOD_ARGUMENT_NOT_VALID_EXCEPTION.getFailureMsg(), ex.getMessage());
 	}
 
 	@ExceptionHandler(Exception.class)

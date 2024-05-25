@@ -2,12 +2,12 @@ package com.custom.common.utilities.validators;
 
 import java.util.regex.Pattern;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-
 import org.apache.commons.lang3.StringUtils;
 import org.owasp.esapi.ESAPI;
 import org.springframework.stereotype.Component;
+
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 @Component(value = "safeInputValidator")
 public class SafeInputValidator implements ConstraintValidator<SafeInput, String> {
