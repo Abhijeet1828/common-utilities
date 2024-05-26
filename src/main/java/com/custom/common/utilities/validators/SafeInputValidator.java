@@ -4,18 +4,11 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.owasp.esapi.ESAPI;
-import org.springframework.stereotype.Component;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-@Component(value = "safeInputValidator")
 public class SafeInputValidator implements ConstraintValidator<SafeInput, String> {
-
-	@Override
-	public void initialize(SafeInput constraintAnnotation) {
-		// no initialization
-	}
 
 	@Override
 	public boolean isValid(String input, ConstraintValidatorContext context) {
