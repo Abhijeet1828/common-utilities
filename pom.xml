@@ -30,7 +30,6 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring-framework.version}</version>
 		</dependency>
-		<!-- SPRING DEPENDENCIES END-->
 
 		<!-- GOOGLE DEPENDENCIES START -->
 		<dependency>
