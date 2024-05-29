@@ -1,30 +1,21 @@
 package com.custom.common.utilities.exception;
 
-/**
- * This class is used to create custom exceptions with HTTP status codes and
- * error messages.
- * 
- * @implNote Extends the Exception class.
- * 
- * @author Abhijeet
- *
- */
-public class CommonException extends Exception {
+public class UnauthorizedException extends Exception {
 
-	private static final long serialVersionUID = -4040308166528955308L;
+	private static final long serialVersionUID = 4694071835871315676L;
 
 	private final Integer statusCode;
 	private final String message;
 	private final String localizedMessage;
 
-	public CommonException(Integer statusCode, String message, String localizedMessage) {
+	public UnauthorizedException(Integer statusCode, String message, String localizedMessage) {
 		super(message);
 		this.statusCode = statusCode;
 		this.message = message;
 		this.localizedMessage = localizedMessage;
 	}
 
-	public CommonException(Integer statusCode, String message) {
+	public UnauthorizedException(Integer statusCode, String message) {
 		super(message);
 		this.statusCode = statusCode;
 		this.message = message;

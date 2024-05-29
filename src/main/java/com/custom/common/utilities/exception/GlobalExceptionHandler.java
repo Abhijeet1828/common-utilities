@@ -65,6 +65,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 				HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+	@ExceptionHandler(UnauthorizedException.class)
+	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+	public ResponseEntity<Object> handleUnauthorizedException(HttpServletResponse response, CommonException ex) {
+		LOGGER_LOCAL.error("Global Unauthorized exception handled! StatusCode = {}, Message = {}", ex.getStatusCode(),
+				ex.getLocalizedMessage());
+
+		return ResponseHelper.generateResponse(
+				new CommonResponse(ex.getStatusCode(), ex.getMessage(), ex.getLocalizedMessage()),
+				HttpStatus.UNAUTHORIZED);
+	}
+
 	@ExceptionHandler(Exception.class)
 	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
 	public ResponseEntity<Object> handleException(Exception ex) {
