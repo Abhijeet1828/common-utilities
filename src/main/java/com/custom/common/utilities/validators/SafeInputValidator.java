@@ -6,7 +6,9 @@ import org.owasp.html.Sanitizers;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SafeInputValidator implements ConstraintValidator<SafeInput, String> {
 
 	private static final PolicyFactory POLICY = Sanitizers.FORMATTING.and(Sanitizers.LINKS).and(Sanitizers.BLOCKS)
@@ -18,10 +20,10 @@ public class SafeInputValidator implements ConstraintValidator<SafeInput, String
 			return true;
 		}
 
-		String sanitizedSql = input.replaceAll("(['\";])+|(--)+", " ");
+		//String sanitizedSql = input.replaceAll("(['\";])+|(--)+", " ");
 
-		String sanitizedHtml = POLICY.sanitize(sanitizedSql);
-
+		String sanitizedHtml = POLICY.sanitize(input);
+		log.info(sanitizedHtml);
 		return sanitizedHtml.equals(input);
 	}
 }

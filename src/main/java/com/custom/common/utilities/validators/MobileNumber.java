@@ -10,15 +10,17 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 @Documented
-@Constraint(validatedBy = OptionalPhoneNumberValidator.class)
-@Target({ ElementType.METHOD, ElementType.FIELD })
+@Constraint(validatedBy = MobileNumberValidator.class)
+@Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface OptionalMobileNumber {
+public @interface MobileNumber {
 
-	String message() default "Invalid phone number : Please enter a valid 10 digit phone number!";
+	String message() default "Invalid mobile number!";
 
 	Class<?>[] groups() default {};
 
 	Class<? extends Payload>[] payload() default {};
+	
+	String region() default "AU";
 
 }
