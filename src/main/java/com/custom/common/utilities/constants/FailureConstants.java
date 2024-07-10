@@ -13,7 +13,7 @@ public enum FailureConstants {
 	INTERNAL_SERVER_ERROR(-1000, "Oops! Something went wrong. Please try again later"),
 	METHOD_ARGUMENT_NOT_VALID_EXCEPTION(-1001, "Invalid Request! Method Argument Not Valid"),
 	FILE_TYPE_EXCEPTION(-1002, "Invalid file extension! Please try again with a valid file"),
-	NO_HANDLER_FOUND_EXCEPTION(-1003, "Invalid Request! No Handler Found");
+	CONSTRAINT_VIOLATION_EXCEPTION(-1003, "Invalid Request! Parameters Not Valid");
 
 	private final int failureCode;
 	private final String failureMsg;

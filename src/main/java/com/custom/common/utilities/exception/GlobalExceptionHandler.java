@@ -1,28 +1,25 @@
 package com.custom.common.utilities.exception;
 
 import java.util.HashMap;
+import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.custom.common.utilities.constants.FailureConstants;
 import com.custom.common.utilities.response.CommonResponse;
-import com.custom.common.utilities.response.ResponseHelper;
-import com.custom.common.utilities.response.Status;
+import com.custom.common.utilities.response.UnifiedResponse;
 
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class is used to handle the exceptions thrown by the service layer and
@@ -35,11 +32,9 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author Abhijeet
  *
  */
-@ControllerAdvice
-@ResponseBody
+@RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-
-	private static final Logger LOGGER_LOCAL = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
@@ -48,53 +43,123 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		for (var err : ex.getBindingResult().getAllErrors())
 			errors.put(((FieldError) err).getField(), err.getDefaultMessage());
 
-		return ResponseHelper.generateResponse(
-				new CommonResponse(new Status(FailureConstants.METHOD_ARGUMENT_NOT_VALID_EXCEPTION.getFailureCode(),
-						FailureConstants.METHOD_ARGUMENT_NOT_VALID_EXCEPTION.getFailureMsg()), errors),
+		return new ResponseEntity<>(
+				new UnifiedResponse<>(FailureConstants.METHOD_ARGUMENT_NOT_VALID_EXCEPTION.getFailureCode(),
+						FailureConstants.METHOD_ARGUMENT_NOT_VALID_EXCEPTION.getFailureMsg(), Map.of("errors", errors)),
 				HttpStatus.BAD_REQUEST);
 	}
 
-	@ExceptionHandler(CommonException.class)
-	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	public ResponseEntity<Object> handleException(HttpServletResponse response, CommonException ex) {
-		LOGGER_LOCAL.error("Global Common exception handled! StatusCode = {}, Message = {}", ex.getStatusCode(),
-				ex.getLocalizedMessage());
+	/**
+	 * This method handles all the violations which happen when using path
+	 * parameters or query parameters.
+	 * 
+	 * @param ex {@link ConstraintViolationException}
+	 * 
+	 * @return
+	 */
+	@ExceptionHandler(ConstraintViolationException.class)
+	public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex) {
+		log.error("Global ConstraintViolationException handled! Message = {}", ex.getMessage());
 
-		return ResponseHelper.generateResponse(
-				new CommonResponse(ex.getStatusCode(), ex.getMessage(), ex.getLocalizedMessage()),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+		var errors = new HashMap<>();
+		for (var err : ex.getConstraintViolations())
+			errors.put(err.getPropertyPath().toString().split("\\.")[1], err.getMessage());
+
+		return new ResponseEntity<>(
+				new UnifiedResponse<>(FailureConstants.CONSTRAINT_VIOLATION_EXCEPTION.getFailureCode(),
+						FailureConstants.CONSTRAINT_VIOLATION_EXCEPTION.getFailureMsg(), Map.of("errors", errors)),
+				HttpStatus.BAD_REQUEST);
 	}
 
+	/**
+	 * This exception is thrown for validation exceptions in files or other places
+	 * where Unauthorized, ResourceNotFound, ResourceAlreadyExists exceptions cannot
+	 * be thrown.
+	 * 
+	 * @apiNote These validations are manual checks and not performed by Spring or
+	 *          Jakarta validations.
+	 * 
+	 * @param ex {@link ValidationException}
+	 * 
+	 * @return
+	 */
+	@ExceptionHandler(ValidationException.class)
+	public ResponseEntity<Object> handleValidationException(ValidationException ex) {
+		log.error("Global Validation exception handled! StatusCode = {}, Message = {}", ex.getStatusCode(),
+				ex.getMessage());
+
+		return new ResponseEntity<>(UnifiedResponse.withEmptyResponse(ex.getStatusCode(), ex.getMessage()),
+				HttpStatus.BAD_REQUEST);
+	}
+
+	/**
+	 * This exception is thrown when a user tries to perform an action which they
+	 * are not authorized for.
+	 * 
+	 * @param response
+	 * 
+	 * @param ex       {@link UnauthorizedException}
+	 * 
+	 * @return
+	 */
 	@ExceptionHandler(UnauthorizedException.class)
-	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	public ResponseEntity<Object> handleUnauthorizedException(HttpServletResponse response, CommonException ex) {
-		LOGGER_LOCAL.error("Global Unauthorized exception handled! StatusCode = {}, Message = {}", ex.getStatusCode(),
+	public ResponseEntity<Object> handleUnauthorizedException(UnauthorizedException ex) {
+		log.error("Global Unauthorized exception handled! StatusCode = {}, Message = {}", ex.getStatusCode(),
 				ex.getLocalizedMessage());
 
-		return ResponseHelper.generateResponse(
-				new CommonResponse(ex.getStatusCode(), ex.getMessage(), ex.getLocalizedMessage()),
+		return new ResponseEntity<>(UnifiedResponse.withEmptyResponse(ex.getStatusCode(), ex.getMessage()),
 				HttpStatus.UNAUTHORIZED);
 	}
 
-	@ExceptionHandler(Exception.class)
-	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	public ResponseEntity<Object> handleException(Exception ex) {
-		LOGGER_LOCAL.error("Global exception handled! Message {}", ex.getMessage(), ex);
+	/**
+	 * This method handles the custom exception which is thrown when a requested
+	 * resource is not found in the database.
+	 * 
+	 * @param ex {@link ResourceNotFoundException}
+	 * 
+	 * @return
+	 */
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public ResponseEntity<Object> handleResourceNotFoundException(ResourceNotFoundException ex) {
+		log.error("Global ResourceNotFoundException handled! StatusCode = {}, Message = {}", ex.getStatusCode(),
+				ex.getLocalizedMessage());
 
-		return ResponseHelper.generateResponse(
-				new CommonResponse(FailureConstants.INTERNAL_SERVER_ERROR.getFailureCode(),
-						FailureConstants.INTERNAL_SERVER_ERROR.getFailureMsg(), ex.getMessage()),
-				HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(UnifiedResponse.withEmptyResponse(ex.getStatusCode(), ex.getMessage()),
+				HttpStatus.NOT_FOUND);
 	}
 
-	@ExceptionHandler(NullPointerException.class)
-	@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-	public ResponseEntity<Object> handleException(NullPointerException ex) {
-		LOGGER_LOCAL.error("NullPointerException handled! Message {}", ex.getMessage(), ex);
+	/**
+	 * This method handles the custom exception which is thrown when a user already
+	 * exists in the database, while signing up.
+	 * 
+	 * @param ex {@link ResourceAlreadyExistsException}
+	 * 
+	 * @return
+	 */
+	@ExceptionHandler(ResourceAlreadyExistsException.class)
+	public ResponseEntity<Object> handleResourceAlreadyExistsException(ResourceAlreadyExistsException ex) {
+		log.error("Global ResourceAlreadyExistsException handled! StatusCode = {}, Message = {}", ex.getStatusCode(),
+				ex.getMessage());
 
-		return ResponseHelper.generateResponse(
-				new CommonResponse(FailureConstants.INTERNAL_SERVER_ERROR.getFailureCode(),
-						FailureConstants.INTERNAL_SERVER_ERROR.getFailureMsg(), ex.getMessage()),
+		return new ResponseEntity<>(UnifiedResponse.withEmptyResponse(ex.getStatusCode(), ex.getMessage()),
+				HttpStatus.CONFLICT);
+	}
+
+	/**
+	 * This method handles all the exceptions which are not handled seperately in
+	 * the above methods.
+	 * 
+	 * @param ex {@link Exception}
+	 * 
+	 * @return
+	 */
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<Object> handleException(Exception ex) {
+		log.error("Global exception handled! Message {}", ex.getMessage(), ex);
+
+		return new ResponseEntity<>(
+				UnifiedResponse.withEmptyResponse(FailureConstants.INTERNAL_SERVER_ERROR.getFailureCode(),
+						FailureConstants.INTERNAL_SERVER_ERROR.getFailureMsg()),
 				HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 

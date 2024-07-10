@@ -3,10 +3,12 @@ package com.custom.common.utilities.filters;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -36,6 +38,10 @@ public class RequestResponseLoggingFilter extends OncePerRequestFilter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(RequestResponseLoggingFilter.class);
 
+	private static final List<AntPathRequestMatcher> EXCLUDED_URLS = List
+			.of("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-resources").stream()
+			.map(AntPathRequestMatcher::new).toList();
+
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
@@ -63,6 +69,11 @@ public class RequestResponseLoggingFilter extends OncePerRequestFilter {
 		LOGGER.info("{}", requestResponse);
 
 		responseWrapper.copyBodyToResponse();
+	}
+
+	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+		return EXCLUDED_URLS.stream().anyMatch(matcher -> matcher.matches(request));
 	}
 
 	private String getStringValue(byte[] contentAsByteArray, String characterEncoding) {

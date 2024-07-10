@@ -5,9 +5,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class UnauthorizedException extends RuntimeException {
+public class ValidationException extends RuntimeException {
 
-	private static final long serialVersionUID = 4694071835871315676L;
+	private static final long serialVersionUID = -4067691637671971127L;
 
 	private final Integer statusCode;
 

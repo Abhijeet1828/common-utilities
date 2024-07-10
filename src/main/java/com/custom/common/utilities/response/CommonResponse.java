@@ -36,11 +36,6 @@ public class CommonResponse {
 		this.responseData = responseData;
 	}
 
-	public CommonResponse(int statusCode, String message, String localizedMessage) {
-		this.status = new Status(statusCode, message, localizedMessage);
-		this.responseData = new HashMap<>();
-	}
-
 	public CommonResponse(int statusCode, String message) {
 		this.status = new Status(statusCode, message);
 		this.responseData = new HashMap<>();

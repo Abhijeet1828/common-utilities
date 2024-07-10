@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.custom.common.utilities.constants.FailureConstants;
-import com.custom.common.utilities.exception.CommonException;
+import com.custom.common.utilities.exception.ValidationException;
 
 /**
  * This class is used to validate the files which are sent in the request.
@@ -47,17 +47,17 @@ public final class FileValidator {
 	 * @param allowedTypes
 	 * @throws CommonException
 	 */
-	public static void validateFile(MultipartFile multipartFile, List<String> allowedTypes) throws CommonException {
+	public static void validateFile(MultipartFile multipartFile, List<String> allowedTypes) {
 		if (multipartFile == null || multipartFile.getSize() == 0l) {
 			LOGGER.error("Empty file in request");
-			throw new CommonException(FailureConstants.METHOD_ARGUMENT_NOT_VALID_EXCEPTION.getFailureCode(),
+			throw new ValidationException(FailureConstants.METHOD_ARGUMENT_NOT_VALID_EXCEPTION.getFailureCode(),
 					FailureConstants.METHOD_ARGUMENT_NOT_VALID_EXCEPTION.getFailureMsg());
 		}
 
 		String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
 		if (isInvalidExtension(extension)) {
 			LOGGER.error("Invalid file extension - {}", extension);
-			throw new CommonException(FailureConstants.FILE_TYPE_EXCEPTION.getFailureCode(),
+			throw new ValidationException(FailureConstants.FILE_TYPE_EXCEPTION.getFailureCode(),
 					FailureConstants.FILE_TYPE_EXCEPTION.getFailureMsg());
 		}
 
@@ -67,12 +67,12 @@ public final class FileValidator {
 			LOGGER.info("Detected type : {}, Actual File Type : {}", detectedType, multipartFile.getContentType());
 
 			if (allowedTypes.stream().noneMatch(type -> type.equalsIgnoreCase(detectedType))) {
-				throw new CommonException(FailureConstants.FILE_TYPE_EXCEPTION.getFailureCode(),
+				throw new ValidationException(FailureConstants.FILE_TYPE_EXCEPTION.getFailureCode(),
 						FailureConstants.FILE_TYPE_EXCEPTION.getFailureMsg());
 			}
 		} catch (IOException e) {
 			LOGGER.error("IOException in detecting file type", e);
-			throw new CommonException(FailureConstants.FILE_TYPE_EXCEPTION.getFailureCode(),
+			throw new ValidationException(FailureConstants.FILE_TYPE_EXCEPTION.getFailureCode(),
 					FailureConstants.FILE_TYPE_EXCEPTION.getFailureMsg());
 		}
 	}
